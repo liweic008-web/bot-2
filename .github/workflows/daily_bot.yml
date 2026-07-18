@@ -1,22 +1,17 @@
-name: Run Todo Bot
-
-on:
- name: Run Todo Bot Three Times a Day
+name: Run Todo Bot Three Times a Day
 
 on:
   schedule:
-    # ── ⏰ 提早半小時的每日三次排隊排程 ──
-    # 30 -> 30分
-    # 0,5,9 -> 國際時間的 00點, 05點, 09點 (對應台灣 08:30, 13:30, 17:30)
+    # 每天台灣時間 08:30、13:30、17:30 自動執行 (提早半小時排隊)
     - cron: '30 0,5,9 * * *'
-    
-  workflow_dispatch: # 保留手動測試的按鈕
+  workflow_dispatch: # 保持手動測試的按鈕
 
 jobs:
-  run-todo:
+  run-bot:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -25,10 +20,11 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install discord.py
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run Bot
+      - name: Run Python Script
         env:
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }} # 這裡會自動抓到專案 B 的新 Token
-          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: python bot.py
