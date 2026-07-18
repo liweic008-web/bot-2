@@ -124,14 +124,17 @@ async def on_ready():
         # ───────────────────────────────────────────────────
 
     # ─── 🚨 注意看！這裡的 report 縮排跟 async for 是對齊的 (4個空格) ───
-    report = "📋 **【今日未完成待辦清單總結】**\n\n"
-    report += "**重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
-    report += "**中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
-    report += "**一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
+    # ✨ 新增：在總結開頭加上這份報告的發布時間
+    report_time_str = now.strftime('%Y/%m/%d %H:%M')
+    
+    report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
+    report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"  # 加一條分隔線讓排版更漂亮
+    report += "🚨 **重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
+    report += "⏳ **中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
+    report += "☕ **一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
     
     # 發送報告並關機
     await channel.send(report)
     await bot.close()
-
 if TOKEN:
     bot.run(TOKEN)
