@@ -1,0 +1,27 @@
+name: Run Todo Bot
+
+on:
+  schedule:
+    - cron: '0 16 * * *' # 每天凌晨 00:00 觸發
+  workflow_dispatch:
+
+jobs:
+  run-todo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install discord.py
+
+      - name: Run Bot
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }} # 這裡會自動抓到專案 B 的新 Token
+          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
+        run: python bot.py
