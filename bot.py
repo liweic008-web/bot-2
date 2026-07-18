@@ -123,13 +123,12 @@ async def on_ready():
             high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         # ───────────────────────────────────────────────────
 
-    # ─── 🚨 注意看！這裡的 report 縮排跟 async for 是對齊的 (4個空格) ───
-    # ─── ✨ 修正：把總結時間也強制換成台灣時間！ ───
-    from datetime import timedelta
-    now = datetime.utcnow() + timedelta(hours=8)  # 先抓國際標準時，再加 8 小時
+    # ─── 🚨 這裡的 report 縮排跟 async for 是對齊的 (前面保留 4 個空格) ───
+    # ✨ 確實定義時間字串，絕對不會再噴 NameError！
+    report_time_str = now.strftime('%Y/%m/%d %H:%M')
     
     report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
-    report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"  # 加一條分隔線讓排版更漂亮
+    report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     report += "🚨 **重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
     report += "⏳ **中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
     report += "☕ **一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
@@ -137,5 +136,6 @@ async def on_ready():
     # 發送報告並關機
     await channel.send(report)
     await bot.close()
+
 if TOKEN:
     bot.run(TOKEN)
