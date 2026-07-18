@@ -149,13 +149,13 @@ async def on_ready():
         
         if content.startswith("###"):
             task_text = content.replace("###", "").strip()
-            low_priority.append(f" (☕•ㅂ•) ### {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            low_priority.append(f" (  •ㅂ•) ### {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("##"):
             task_text = content.replace("##", "").strip()
-            medium_priority.append(f" (⌛'ω') ## {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            medium_priority.append(f" (  'ω') ## {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("#"):
             task_text = content.replace("#", "").strip()
-            high_priority.append(f" (🚨ﾟДﾟ) # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            high_priority.append(f" (╯°□°）╯︵ ┻━┻ # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         # ───────────────────────────────────────────────────
 
     # ─── 🚨 總結輸出區塊 (前面保留 4 個空格) ───
@@ -163,9 +163,9 @@ async def on_ready():
     
     report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
     report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-    report += " (🚨ﾟДﾟ)b **「進度告急！火燒屁股重要任務」**\n" + ("\n".join(high_priority) if high_priority else "  (๑´ㅂ`๑) _目前沒有任何緊急任務，讚啦！_") + "\n\n"
-    report += " (⌛'ω')p **「記得要做！中等難度任務」**\n" + ("\n".join(medium_priority) if medium_priority else "  _暫無任務_") + "\n\n"
-    report += " (☕•ㅂ•)旦 **「慢慢來！一般輕鬆任務」**\n" + ("\n".join(low_priority) if low_priority else "  _暫無任務_") + "\n"
+    report += " (╯°□°）╯︵ ┻━┻ **「進度告急！火燒屁股重要任務」**\n" + ("\n".join(high_priority) if high_priority else "  (๑´ㅂ`๑) _目前沒有任何緊急任務，讚啦！_") + "\n\n"
+    report += " ( 'ω')p **「記得要做！中等難度任務」**\n" + ("\n".join(medium_priority) if medium_priority else "  _暫無任務_") + "\n\n"
+    report += " (  •ㅂ•)旦 **「慢慢來！一般輕鬆任務」**\n" + ("\n".join(low_priority) if low_priority else "  _暫無任務_") + "\n"
     
     # 這是原本 await bot.close() 的縮排位置 (前面有 4 個空格)
     await channel.send(report)
