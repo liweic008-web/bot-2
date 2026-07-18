@@ -58,21 +58,22 @@ async def on_ready():
             except Exception:
                 pass  # 如果訊息被刪除了就忽略
 
-        # 如果被標記為完成了，我們就放過它，檢查下一條
-        if is_completed:
-            continue
-
-        # 4. 用 Python 字串魔法，計算井字號數量並分類
+# ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
         if content.startswith("###"):
+            # 三個井字號 ──> 最弱的小字，當作「一般任務」
             task_text = content.replace("###", "").strip()
-            high_priority.append(f"🔴 {task_text} (由 {message.author.display_name} 建立)")
+            low_priority.append(f"🔵 ### {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+            
         elif content.startswith("##"):
+            # 兩個井字號 ──> 中等字體，依然是「中等任務」
             task_text = content.replace("##", "").strip()
-            medium_priority.append(f"🟡 {task_text} (由 {message.author.display_name} 建立)")
+            medium_priority.append(f"🟡 ## {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+            
         elif content.startswith("#"):
+            # 一個井字號 ──> 最大最粗的字，當作「🚨 級別最高的重要任務」！
             task_text = content.replace("#", "").strip()
-            low_priority.append(f"🔵 {task_text} (由 {message.author.display_name} 建立)")
-
+            high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+        # ───────────────────────────────────────────────────
     # 5. 組裝成精美的待辦清單報告
     report = "📋 **【今日未完成待辦清單總結】**\n"
     report += "大家丟出來的任務幫你們整理好囉，完成的記得按 ❤️ 或回覆「已完成」！\n"
