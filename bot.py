@@ -32,45 +32,83 @@ async def on_ready():
     print("【進度】正在撈取過去的歷史訊息...")
     
     # 2. 開始撈取頻道最近的 100 條訊息
-    async for message in channel.history(limit=100):
+async for message in channel.history(limit=100):
         content = message.content.strip()
         
-        # 如果不是以 # 開頭，或者這條訊息是機器人自己發的，就直接跳過
         if not content.startswith("#") or message.author == bot.user:
             continue
 
-        # 3. 檢查任務是否已完成 (檢查貼圖和回覆)
+        # 檢查是否已完成 (按讚或回覆已完成)
         is_completed = False
-
-        # (A) 檢查有沒有人按愛心或大拇指
         for reaction in message.reactions:
             if str(reaction.emoji) in ["❤️", "👍"]:
                 is_completed = True
                 break
-
-        # (B) 檢查這條訊息有沒有被「回覆」且寫著「已完成」
         if message.reference and message.reference.message_id:
             try:
-                # 撈取被回覆的那一條訊息
                 replied_msg = await channel.fetch_message(message.reference.message_id)
                 if "已完成" in replied_msg.content:
                     is_completed = True
             except Exception:
-                pass  # 如果訊息被刪除了就忽略
+                pass
+        if is_completed:
+            continue
 
-# ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
+        # ─── ✨ 關鍵修正：先把 time_hint 準備好，放最前面！ ───
+        time_hint = ""  
+        
+        # ────── 🧭 日期與時間雙重辨認魔法 ──────
+        datetime_match = re.search(r"(?:(\d{1,2})[/\-](\d{1,2})\s+)?(\d{1,2}):(\d{2})", content)
+        if datetime_match:
+            month_str = datetime_match.group(1)
+            day_str = datetime_match.group(2)
+            hour = int(datetime_match.group(3))
+            minute = int(datetime_match.group(4))
+            
+            task_year = now.year
+            task_month = int(month_str) if month_str else now.month
+            task_day = int(day_str) if day_str else now.day
+            
+            try:
+                task_time = datetime(task_year, task_month, task_day, hour, minute, 0, 0)
+                if task_time <= now:
+                    diff = now - task_time
+                    days = diff.days
+                    hours = diff.seconds // 3600
+                    minutes = (diff.seconds % 3600) // 60
+                    if days > 0:
+                        over_str = f"{days}天{hours}小時"
+                    elif hours > 0:
+                        over_str = f"{hours}小時{minutes}分鐘"
+                    else:
+                        over_str = f"{minutes}分鐘"
+                    display_time = task_time.strftime('%m/%d %H:%M') if month_str else datetime_match.group(0)
+                    time_hint = f" ⏰ **[已超時 {over_str}！]**"
+                else:
+                    diff = task_time - now
+                    days = diff.days
+                    hours = diff.seconds // 3600
+                    minutes = (diff.seconds % 3600) // 60
+                    if days > 0:
+                        remain_str = f"{days}天{hours}小時"
+                    elif hours > 0:
+                        remain_str = f"{hours}小時{minutes}分鐘"
+                    else:
+                        remain_str = f"{minutes}分鐘"
+                    time_hint = f" ⏳ (剩餘 {remain_str})"
+            except ValueError:
+                pass
+        # ───────────────────────────────────────────────────
+
+        # ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
+        # 這樣一來，下面的 time_hint 在使用時就絕對不會出錯了！
         if content.startswith("###"):
-            # 三個井字號 ──> 最弱的小字，當作「一般任務」
             task_text = content.replace("###", "").strip()
             low_priority.append(f"🔵 ### {task_text}{time_hint} (由 {message.author.display_name} 建立)")
-            
         elif content.startswith("##"):
-            # 兩個井字號 ──> 中等字體，依然是「中等任務」
             task_text = content.replace("##", "").strip()
             medium_priority.append(f"🟡 ## {task_text}{time_hint} (由 {message.author.display_name} 建立)")
-            
         elif content.startswith("#"):
-            # 一個井字號 ──> 最大最粗的字，當作「🚨 級別最高的重要任務」！
             task_text = content.replace("#", "").strip()
             high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立)")
         # ───────────────────────────────────────────────────
