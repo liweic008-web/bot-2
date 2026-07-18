@@ -124,8 +124,9 @@ async def on_ready():
         # ───────────────────────────────────────────────────
 
     # ─── 🚨 注意看！這裡的 report 縮排跟 async for 是對齊的 (4個空格) ───
-    # ✨ 新增：在總結開頭加上這份報告的發布時間
-    report_time_str = now.strftime('%Y/%m/%d %H:%M')
+    # ─── ✨ 修正：把總結時間也強制換成台灣時間！ ───
+    from datetime import timedelta
+    now = datetime.utcnow() + timedelta(hours=8)  # 先抓國際標準時，再加 8 小時
     
     report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
     report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"  # 加一條分隔線讓排版更漂亮
