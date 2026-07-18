@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 intents = discord.Intents.default()
@@ -11,8 +11,8 @@ intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-# ─── 💡 頻道 ID 寫死大法 ───
-CHANNEL_ID = 1527992244043255899  # 👈 請記得把這串數字換成你真正的 Discord 頻道 ID 喔！
+# ─── 💡 頻道 ID 寫死大絕招 ───
+CHANNEL_ID = 123456789012345678  # 👈 請記得換成你真正的 Discord 頻道 ID 喔！
 
 @bot.event
 async def on_ready():
@@ -23,8 +23,8 @@ async def on_ready():
         await bot.close()
         return
 
-    # 取得現在的台灣時間
-    now = datetime.now()
+    # ─── ✨ 核心修正：一上線就強制把 now 定義為真正的台灣時間！ ───
+    now = datetime.utcnow() + timedelta(hours=8)
     print(f"【現在時間】台灣時間：{now.strftime('%Y-%m-%d %H:%M')}")
 
     high_priority = []
@@ -85,8 +85,7 @@ async def on_ready():
                         over_str = f"{hours}小時{minutes}分鐘"
                     else:
                         over_str = f"{minutes}分鐘"
-                    display_time = task_time.strftime('%m/%d %H:%M') if month_str else datetime_match.group(0)
-                    time_hint = f"**[已超時 {over_str}！]**"
+                    time_hint = f" ⏰ **[已超時 {over_str}！]**"
                 else:
                     # 還沒到期，計算剩餘時間！
                     diff = task_time - now
@@ -99,43 +98,35 @@ async def on_ready():
                         remain_str = f"{hours}小時{minutes}分鐘"
                     else:
                         remain_str = f"{minutes}分鐘"
-                    time_hint = f"(剩餘 {remain_str})"
+                    time_hint = f" ⏳ (剩餘 {remain_str})"
             except ValueError:
                 pass
         # ───────────────────────────────────────────────────
 
-# ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
-        # ─── ✨ 新增：計算這條訊息的台灣發布時間 ───
-        # Discord 訊息時間是 UTC，加上 8 小時變成台灣時間
-        from datetime import timedelta
+        # ────── 🎯 反轉排版：換上超生動的任務前置顏文字 ──────
         msg_tw_time = message.created_at + timedelta(hours=8)
-        time_created_str = msg_tw_time.strftime('%m/%d %H:%M')  # 格式化成 "07/18 21:05"
+        time_created_str = msg_tw_time.strftime('%m/%d %H:%M')
         
-        # 把 (發布於 07/18 21:05) 塞進每一條任務的最後面
         if content.startswith("###"):
             task_text = content.replace("###", "").strip()
-            low_priority.append(f"🔵 ### {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            low_priority.append(f" (☕•ㅂ•) ### {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("##"):
             task_text = content.replace("##", "").strip()
-            medium_priority.append(f"🟡 ## {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            medium_priority.append(f" (⌛'ω') ## {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("#"):
             task_text = content.replace("#", "").strip()
-            high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
+            high_priority.append(f" (🚨ﾟДﾟ) # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         # ───────────────────────────────────────────────────
 
-    # ─── 🚨 這裡的 report 縮排跟 async for 是對齊的 (前面保留 4 個空格) ───
-    # ✨ 確實定義時間字串，絕對不會再噴 NameError！
+    # ─── 🚨 總結輸出區塊 (前面保留 4 個空格) ───
     report_time_str = now.strftime('%Y/%m/%d %H:%M')
     
     report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
     report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-    report += "🚨 **重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
-    report += "⏳ **中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
-    report += "☕ **一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
+    report += " (🚨ﾟДﾟ)b **「進度告急！火燒屁股重要任務」**\n" + ("\n".join(high_priority) if high_priority else "  (๑´ㅂ`๑) _目前沒有任何緊急任務，讚啦！_") + "\n\n"
+    report += " (⌛'ω')p **「記得要做！中等難度任務」**\n" + ("\n".join(medium_priority) if medium_priority else "  _暫無任務_") + "\n\n"
+    report += " (☕•ㅂ•)旦 **「慢慢來！一般輕鬆任務」**\n" + ("\n".join(low_priority) if low_priority else "  _暫無任務_") + "\n"
     
     # 發送報告並關機
     await channel.send(report)
     await bot.close()
-
-if TOKEN:
-    bot.run(TOKEN)
