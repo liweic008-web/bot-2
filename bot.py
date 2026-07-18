@@ -104,16 +104,23 @@ async def on_ready():
                 pass
         # ───────────────────────────────────────────────────
 
-        # ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
+# ────── 🎯 反轉排版：井字號越少，字體越大、越重要！ ──────
+        # ─── ✨ 新增：計算這條訊息的台灣發布時間 ───
+        # Discord 訊息時間是 UTC，加上 8 小時變成台灣時間
+        from datetime import timedelta
+        msg_tw_time = message.created_at + timedelta(hours=8)
+        time_created_str = msg_tw_time.strftime('%m/%d %H:%M')  # 格式化成 "07/18 21:05"
+        
+        # 把 (發布於 07/18 21:05) 塞進每一條任務的最後面
         if content.startswith("###"):
             task_text = content.replace("###", "").strip()
-            low_priority.append(f"🔵 ### {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+            low_priority.append(f"🔵 ### {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("##"):
             task_text = content.replace("##", "").strip()
-            medium_priority.append(f"🟡 ## {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+            medium_priority.append(f"🟡 ## {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         elif content.startswith("#"):
             task_text = content.replace("#", "").strip()
-            high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立)")
+            high_priority.append(f"🔴 # {task_text}{time_hint} (由 {message.author.display_name} 建立於 {time_created_str})")
         # ───────────────────────────────────────────────────
 
     # ─── 🚨 注意看！這裡的 report 縮排跟 async for 是對齊的 (4個空格) ───
