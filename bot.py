@@ -12,7 +12,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 # ─── 💡 頻道 ID 寫死大法 ───
-CHANNEL_ID = 123456789012345678  # 👈 請記得把這串數字換成你真正的 Discord 頻道 ID 喔！
+CHANNEL_ID = 1527992244043255899  # 👈 請記得把這串數字換成你真正的 Discord 頻道 ID 喔！
 
 @bot.event
 async def on_ready():
