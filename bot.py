@@ -19,9 +19,49 @@ async def on_ready():
     print(f"【系統通知】機器人 {bot.user} 已上線。")
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
-        print("【錯誤】找不到指定的頻道，請檢查 CHANNEL_ID 是否正確。")
+        print(f"【關鍵錯誤】在你的 Discord 找不到 ID 為 {CHANNEL_ID} 的頻道！請檢查 ID 是否填錯。")
         await bot.close()
         return
+
+    print(f"【成功鎖定】成功找到頻道：#{channel.name} (伺服器：{channel.guild.name})")
+
+    now = datetime.utcnow() + timedelta(hours=8)
+    print(f"【現在時間】台灣時間：{now.strftime('%Y-%m-%d %H:%M')}")
+
+    high_priority = []
+    medium_priority = []
+    low_priority = []
+
+    print("【開始撈取】正在翻閱最近的 100 條訊息...")
+    msg_count = 0
+    match_count = 0
+
+    async for message in channel.history(limit=100):
+        msg_count += 1
+        content = message.content.strip()
+        
+        if not content.startswith("#") or message.author == bot.user:
+            continue
+
+        match_count += 1
+        print(f" -> 抓到符合井字號的任務了！內容是: {content[:15]}...")
+
+        # 檢查是否已完成 (按讚或回覆已完成)
+        is_completed = False
+        for reaction in message.reactions:
+            if str(reaction.emoji) in ["❤️", "👍"]:
+                is_completed = True
+                break
+        if message.reference and message.reference.message_id:
+            try:
+                replied_msg = await channel.fetch_message(message.reference.message_id)
+                if "已完成" in replied_msg.content:
+                    is_completed = True
+            except Exception:
+                pass
+        if is_completed:
+            print("    (這個任務被判定已完成，跳過！)")
+            continue
 
     # ─── ✨ 核心修正：一上線就強制把 now 定義為真正的台灣時間！ ───
     now = datetime.utcnow() + timedelta(hours=8)
