@@ -167,6 +167,11 @@ async def on_ready():
     report += " (⌛'ω')p **「記得要做！中等難度任務」**\n" + ("\n".join(medium_priority) if medium_priority else "  _暫無任務_") + "\n\n"
     report += " (☕•ㅂ•)旦 **「慢慢來！一般輕鬆任務」**\n" + ("\n".join(low_priority) if low_priority else "  _暫無任務_") + "\n"
     
-    # 發送報告並關機
+    # 這是原本 await bot.close() 的縮排位置 (前面有 4 個空格)
     await channel.send(report)
     await bot.close()
+
+# ─── 🚨 關鍵修正：完全不留退路，強制啟動機器人！ ───
+# 請確保這兩行「完全沒有任何前置空格」，靠在最左邊！
+print(f"【啟動測試】正在嘗試使用 Token 登入 Discord... (Token 長度: {len(TOKEN) if TOKEN else 0})")
+bot.run(TOKEN)
