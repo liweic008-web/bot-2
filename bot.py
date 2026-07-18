@@ -86,7 +86,7 @@ async def on_ready():
                     else:
                         over_str = f"{minutes}分鐘"
                     display_time = task_time.strftime('%m/%d %H:%M') if month_str else datetime_match.group(0)
-                    time_hint = f" ⏰ **[已超時 {over_str}！]**"
+                    time_hint = f"**[已超時 {over_str}！]**"
                 else:
                     # 還沒到期，計算剩餘時間！
                     diff = task_time - now
@@ -99,7 +99,7 @@ async def on_ready():
                         remain_str = f"{hours}小時{minutes}分鐘"
                     else:
                         remain_str = f"{minutes}分鐘"
-                    time_hint = f" ⏳ (剩餘 {remain_str})"
+                    time_hint = f"(剩餘 {remain_str})"
             except ValueError:
                 pass
         # ───────────────────────────────────────────────────
@@ -118,9 +118,9 @@ async def on_ready():
 
     # ─── 🚨 注意看！這裡的 report 縮排跟 async for 是對齊的 (4個空格) ───
     report = "📋 **【今日未完成待辦清單總結】**\n\n"
-    report += "🚨 **重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
-    report += "⏳ **中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
-    report += "☕ **一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
+    report += "**重要任務 (🔴)**\n" + ("\n".join(high_priority) if high_priority else "_暫無任務_") + "\n\n"
+    report += "**中等任務 (🟡)**\n" + ("\n".join(medium_priority) if medium_priority else "_暫無任務_") + "\n\n"
+    report += "**一般任務 (🔵)**\n" + ("\n".join(low_priority) if low_priority else "_暫無任務_") + "\n"
     
     # 發送報告並關機
     await channel.send(report)
