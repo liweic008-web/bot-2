@@ -32,7 +32,7 @@ async def on_ready():
     print("【進度】正在撈取過去的歷史訊息...")
     
     # 2. 開始撈取頻道最近的 100 條訊息
-async for message in channel.history(limit=100):
+    async for message in channel.history(limit=100):
         content = message.content.strip()
         
         if not content.startswith("#") or message.author == bot.user:
