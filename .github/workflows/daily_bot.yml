@@ -2,9 +2,12 @@ name: Run Todo Bot Three Times a Day
 
 on:
   schedule:
-    # 每天台灣時間 08:30、13:30、17:30 自動執行 (提早半小時排隊)
-    - cron: '30 0,5,9 * * *'
-  workflow_dispatch: # 保持手動測試的按鈕
+    # ── ⏰ 真正提早半小時的每日三次排隊排程 ──
+    # 30 -> 30分
+    # 3,15,23 -> 國際時間的 03點, 15點, 23點 (完全對應台灣 11:30, 23:30, 07:30)
+    - cron: '30 3,15,23 * * *'
+    
+  workflow_dispatch: # 保留手動測試的按鈕
 
 jobs:
   run-bot:
