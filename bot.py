@@ -161,9 +161,9 @@ async def on_ready():
     # ─── 🚨 總結輸出區塊 (前面保留 4 個空格) ───
     report_time_str = now.strftime('%Y/%m/%d %H:%M')
     
-    report = f"📋 **【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
+    report = f"**【今日未完成待辦清單總結】** (發布時間：{report_time_str})\n"
     report += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-    report += " (╯°□°）╯︵ ┻━┻ **「進度告急！火燒屁股重要任務」**\n" + ("\n".join(high_priority) if high_priority else "  (๑´ㅂ`๑) _目前沒有任何緊急任務，讚啦！_") + "\n\n"
+    report += " (╯°□°）╯︵ ┻━┻ **「進度告急！重要任務」**\n" + ("\n".join(high_priority) if high_priority else "  (๑´ㅂ`๑) _目前沒有任何緊急任務，讚啦！_") + "\n\n"
     report += " ( 'ω')p **「記得要做！中等難度任務」**\n" + ("\n".join(medium_priority) if medium_priority else "  _暫無任務_") + "\n\n"
     report += " (  •ㅂ•)旦 **「慢慢來！一般輕鬆任務」**\n" + ("\n".join(low_priority) if low_priority else "  _暫無任務_") + "\n"
     
