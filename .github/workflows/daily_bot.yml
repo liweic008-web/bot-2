@@ -3,7 +3,7 @@ name: Run Todo Bot Three Times a Day
 on:
   schedule:
     # 完美錯開全球整點與半點的尖峰！換算台灣時間為 07:27, 11:27, 23:27
-    - cron: '27 3,15,23 * * *'
+    - cron: '27 15,23 * * *'
     
   workflow_dispatch: # 保留手動測試的按鈕
 
