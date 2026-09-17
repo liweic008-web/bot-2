@@ -49,7 +49,7 @@ async def on_ready():
         # 檢查是否已完成 (按讚或回覆已完成)
         is_completed = False
         for reaction in message.reactions:
-            if str(reaction.emoji) in ["❤️", "👍"]:
+            if str(reaction.emoji) in ["❤️", "🫡"]:
                 is_completed = True
                 break
         if message.reference and message.reference.message_id:
